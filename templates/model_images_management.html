@@ -1,0 +1,592 @@
+{% extends "base.html" %}
+
+{% block title %}Model Images Management - RM Team Checklist{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h2>🖼️ Model Images Management</h2>
+        <div class="admin-actions">
+            <a href="{{ url_for('admin_dashboard') }}" class="admin-btn" title="Back to Dashboard">
+                <span class="btn-icon">🏠</span>
+                <span class="btn-text">Dashboard</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Upload Section -->
+    <div class="upload-section">
+        <h3>Upload Model Guide Image</h3>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="category">Category:</label>
+                    <select id="category" name="category" required>
+                        <option value="">Select Category</option>
+                        {% for category in categories %}
+                            <option value="{{ category }}">{{ category }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="model">Model:</label>
+                    <select id="model" name="model" required disabled>
+                        <option value="">Select Model</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="image">Guide Image:</label>
+                <div class="model-image-upload" id="imageUpload" onclick="document.getElementById('image').click()">
+                    <input type="file" id="image" name="image" accept="image/*" required>
+                    <p>Click to select or drag & drop an image file</p>
+                    <small>Supported formats: PNG, JPG, JPEG, GIF, WebP (Max 16MB)</small>
+                </div>
+                <div class="model-image-preview" id="imagePreview" style="display: none;">
+                    <img id="previewImg" src="" alt="Preview">
+                    <div class="model-image-actions">
+                        <button type="button" id="removeImage" class="admin-btn admin-btn-logout" style="height: 40px; min-width: 60px;">
+                            <span class="btn-icon" style="font-size: 16px; margin-bottom: 2px;">🗑️</span>
+                            <span class="btn-text" style="font-size: 10px;">Remove</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="admin-btn admin-btn-success" style="height: 50px; min-width: 100px;">
+                <span class="btn-icon" style="font-size: 20px; margin-bottom: 4px;">📤</span>
+                <span class="btn-text">Upload</span>
+            </button>
+        </form>
+    </div>
+
+    <!-- Models List -->
+    <div class="models-section">
+        <h3>Models with Images</h3>
+        <div class="models-grid">
+            {% for model_data in models_data %}
+                <div class="model-card" data-category="{{ model_data.category }}" data-model="{{ model_data.model }}">
+                    <div class="model-header">
+                        <h4>{{ model_data.model }}</h4>
+                        <span class="category-badge">{{ model_data.category }}</span>
+                    </div>
+
+                    {% if model_data.image_url %}
+                        <div class="model-image">
+                            <img src="{{ model_data.image_url }}" alt="{{ model_data.model }}" onclick="showImagePopup('{{ model_data.model }}', '{{ model_data.image_url }}')">
+                            <div class="image-actions">
+                                <button class="admin-btn admin-btn-logout" style="height: 40px; min-width: 60px;" onclick="deleteModelImage('{{ model_data.category }}', '{{ model_data.model }}')">
+                                    <span class="btn-icon" style="font-size: 16px; margin-bottom: 2px;">🗑️</span>
+                                    <span class="btn-text" style="font-size: 10px;">Delete</span>
+                                </button>
+                            </div>
+                        </div>
+                        <small class="upload-date">Uploaded: {{ model_data.created_date }}</small>
+                    {% else %}
+                        <div class="no-image">
+                            <p>📷 No guide image</p>
+                            <button class="admin-btn admin-btn-success" style="height: 40px; min-width: 70px;" onclick="selectModelForUpload('{{ model_data.category }}', '{{ model_data.model }}')">
+                                <span class="btn-icon" style="font-size: 16px; margin-bottom: 2px;">➕</span>
+                                <span class="btn-text" style="font-size: 10px;">Add Image</span>
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+// Category and Model Selection
+document.getElementById('category').addEventListener('change', function() {
+    const category = this.value;
+    const modelSelect = document.getElementById('model');
+
+    modelSelect.innerHTML = '<option value="">Select Model</option>';
+    modelSelect.disabled = true;
+
+    if (category) {
+        fetch(`/get_dynamic_data/models?category=${encodeURIComponent(category)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.data.length > 0) {
+                    data.data.forEach(model => {
+                        const option = document.createElement('option');
+                        option.value = model;
+                        option.textContent = model;
+                        modelSelect.appendChild(option);
+                    });
+                    modelSelect.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading models:', error);
+            });
+    }
+});
+
+// Image Upload Preview
+document.getElementById('image').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('previewImg').src = e.target.result;
+            document.getElementById('imagePreview').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Remove Image Preview
+document.getElementById('removeImage').addEventListener('click', function() {
+    document.getElementById('image').value = '';
+    document.getElementById('imagePreview').style.display = 'none';
+});
+
+// Drag & Drop
+const uploadArea = document.getElementById('imageUpload');
+uploadArea.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    this.classList.add('dragover');
+});
+
+uploadArea.addEventListener('dragleave', function(e) {
+    e.preventDefault();
+    this.classList.remove('dragover');
+});
+
+uploadArea.addEventListener('drop', function(e) {
+    e.preventDefault();
+    this.classList.remove('dragover');
+
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        document.getElementById('image').files = files;
+        document.getElementById('image').dispatchEvent(new Event('change'));
+    }
+});
+
+// Form Submission
+document.getElementById('uploadForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append('category_name', document.getElementById('category').value);
+    formData.append('model_name', document.getElementById('model').value);
+    formData.append('image', document.getElementById('image').files[0]);
+
+    fetch('/upload_model_image', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Image uploaded successfully!');
+            location.reload();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Upload failed');
+    });
+});
+
+// Helper Functions
+function selectModelForUpload(category, model) {
+    document.getElementById('category').value = category;
+    document.getElementById('category').dispatchEvent(new Event('change'));
+
+    setTimeout(() => {
+        document.getElementById('model').value = model;
+    }, 500);
+
+    document.querySelector('.upload-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+function deleteModelImage(category, model) {
+    if (confirm(`Are you sure you want to delete the image for ${model}?`)) {
+        fetch('/delete_model_image', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                category_name: category,
+                model_name: model
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Image deleted successfully!');
+                location.reload();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Delete failed');
+        });
+    }
+}
+
+function showImagePopup(modelName, imageUrl) {
+    // Create popup overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'model-image-overlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        cursor: pointer;
+    `;
+
+    // Create popup content
+    const popup = document.createElement('div');
+    popup.className = 'model-image-popup';
+    popup.style.cssText = `
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        max-width: 90%;
+        max-height: 90%;
+        position: relative;
+        cursor: default;
+    `;
+
+    // Prevent popup from closing when clicking on content
+    popup.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+
+    // Create close button
+    const closeBtn = document.createElement('button');
+    closeBtn.innerHTML = '×';
+    closeBtn.style.cssText = `
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #666;
+    `;
+    closeBtn.addEventListener('click', function() {
+        document.body.removeChild(overlay);
+    });
+
+    // Create title
+    const title = document.createElement('h3');
+    title.textContent = `Model Guide: ${modelName}`;
+    title.style.cssText = `
+        margin: 0 0 15px 0;
+        color: #333;
+        text-align: center;
+    `;
+
+    // Create image
+    const img = document.createElement('img');
+    img.src = imageUrl;
+    img.alt = `${modelName} Guide Image`;
+    img.style.cssText = `
+        max-width: 100%;
+        max-height: 70vh;
+        display: block;
+        margin: 0 auto;
+        border-radius: 5px;
+        cursor: grab;
+        transition: transform 0.3s ease;
+    `;
+    
+    // Add zoom and pan functionality
+    addImageZoomPan(img);
+
+    // Assemble popup
+    popup.appendChild(closeBtn);
+    popup.appendChild(title);
+    popup.appendChild(img);
+    overlay.appendChild(popup);
+
+    // Close on overlay click
+    overlay.addEventListener('click', function() {
+        document.body.removeChild(overlay);
+    });
+
+    // Add to page
+    document.body.appendChild(overlay);
+}
+
+// Image Zoom and Pan Functionality - Enhanced Version
+function addImageZoomPan(img) {
+    let scale = 1;
+    let panning = false;
+    let zooming = false;
+    let pointX = 0;
+    let pointY = 0;
+    let start = { x: 0, y: 0 };
+    
+    // Touch tracking for better mobile experience
+    let initialDistance = 0;
+    let initialScale = 1;
+    let initialCenter = { x: 0, y: 0 };
+    
+    // Set transform origin to center
+    img.style.transformOrigin = 'center center';
+    img.style.transition = 'none'; // Remove any CSS transitions that might interfere
+    
+    // Apply transform function with safety checks
+    function applyTransform() {
+        // Safety checks to prevent invalid values
+        if (isNaN(scale) || scale <= 0) {
+            scale = 1;
+        }
+        if (isNaN(pointX)) {
+            pointX = 0;
+        }
+        if (isNaN(pointY)) {
+            pointY = 0;
+        }
+        
+        // Limit extreme positions to keep image visible
+        const maxOffset = 500;
+        pointX = Math.max(-maxOffset, Math.min(maxOffset, pointX));
+        pointY = Math.max(-maxOffset, Math.min(maxOffset, pointY));
+        
+        img.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+        img.style.cursor = scale > 1 ? 'grab' : 'grab';
+    }
+    
+    // Mouse wheel zoom (desktop)
+    img.addEventListener('wheel', function(e) {
+        e.preventDefault();
+        
+        const delta = e.deltaY > 0 ? 0.9 : 1.1;
+        const oldScale = scale;
+        scale *= delta;
+        
+        // Limit zoom range
+        scale = Math.min(Math.max(0.5, scale), 5);
+        
+        // Zoom towards mouse position
+        const rect = img.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left - rect.width / 2;
+        const mouseY = e.clientY - rect.top - rect.height / 2;
+        
+        const scaleChange = scale / oldScale;
+        pointX = mouseX - (mouseX - pointX) * scaleChange;
+        pointY = mouseY - (mouseY - pointY) * scaleChange;
+        
+        applyTransform();
+    });
+    
+    // Touch start
+    img.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        
+        if (e.touches.length === 2) {
+            // Two finger pinch start
+            zooming = true;
+            panning = false;
+            
+            initialDistance = getDistance(e.touches[0], e.touches[1]);
+            
+            // Safety check: ensure we have a valid distance
+            if (initialDistance < 10) {
+                initialDistance = 50; // Set a minimum distance
+            }
+            
+            initialScale = scale;
+            
+            // Calculate center point between two fingers
+            initialCenter = {
+                x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+                y: (e.touches[0].clientY + e.touches[1].clientY) / 2
+            };
+            
+        } else if (e.touches.length === 1 && !zooming) {
+            // Single finger pan start
+            panning = true;
+            start = { 
+                x: e.touches[0].clientX - pointX, 
+                y: e.touches[0].clientY - pointY 
+            };
+            img.style.cursor = 'grabbing';
+        }
+    });
+    
+    // Touch move
+    img.addEventListener('touchmove', function(e) {
+        e.preventDefault();
+        
+        if (e.touches.length === 2 && zooming) {
+            // Two finger pinch zoom - SIMPLIFIED to prevent disappearing
+            const currentDistance = getDistance(e.touches[0], e.touches[1]);
+            
+            // Prevent division by zero or very small numbers
+            if (initialDistance > 10) {
+                const scaleChange = currentDistance / initialDistance;
+                const newScale = initialScale * scaleChange;
+                
+                // Limit zoom range with safety checks
+                scale = Math.min(Math.max(0.5, newScale), 5);
+                
+                // Simple zoom without complex position calculations
+                // This prevents the image from disappearing
+                applyTransform();
+            }
+            
+        } else if (e.touches.length === 1 && panning && !zooming) {
+            // Single finger pan
+            pointX = e.touches[0].clientX - start.x;
+            pointY = e.touches[0].clientY - start.y;
+            applyTransform();
+        }
+    });
+    
+    // Touch end - IMPROVED: Preserve zoom level
+    img.addEventListener('touchend', function(e) {
+        if (e.touches.length === 0) {
+            // All fingers lifted - preserve current state
+            zooming = false;
+            panning = false;
+            img.style.cursor = scale > 1 ? 'grab' : 'grab';
+            
+            // Smooth transition back to normal cursor
+            setTimeout(() => {
+                img.style.cursor = scale > 1 ? 'grab' : 'grab';
+            }, 100);
+            
+        } else if (e.touches.length === 1 && zooming) {
+            // Switched from two fingers to one - stop zooming, allow panning
+            zooming = false;
+            if (scale > 1) {
+                panning = true;
+                start = { 
+                    x: e.touches[0].clientX - pointX, 
+                    y: e.touches[0].clientY - pointY 
+                };
+            }
+        }
+    });
+    
+    // Mouse events for desktop pan
+    img.addEventListener('mousedown', function(e) {
+        if (scale > 1) {
+            e.preventDefault();
+            panning = true;
+            start = { x: e.clientX - pointX, y: e.clientY - pointY };
+            img.style.cursor = 'grabbing';
+        }
+    });
+    
+    document.addEventListener('mousemove', function(e) {
+        if (panning && !zooming) {
+            e.preventDefault();
+            pointX = e.clientX - start.x;
+            pointY = e.clientY - start.y;
+            applyTransform();
+        }
+    });
+    
+    document.addEventListener('mouseup', function() {
+        if (panning) {
+            panning = false;
+            img.style.cursor = scale > 1 ? 'grab' : 'grab';
+        }
+    });
+    
+    // Double-tap to reset zoom (mobile) - Enhanced
+    let lastTap = 0;
+    let tapCount = 0;
+    
+    img.addEventListener('touchend', function(e) {
+        if (e.touches.length === 0) {
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTap;
+            
+            if (tapLength < 300 && tapLength > 0) {
+                tapCount++;
+                if (tapCount === 2) {
+                    // Double tap detected
+                    e.preventDefault();
+                    if (scale > 1) {
+                        resetZoom();
+                    } else {
+                        // Zoom in to 2x on double tap
+                        scale = 2;
+                        applyTransform();
+                    }
+                    tapCount = 0;
+                }
+            } else {
+                tapCount = 1;
+            }
+            
+            lastTap = currentTime;
+            
+            // Reset tap count after delay
+            setTimeout(() => {
+                tapCount = 0;
+            }, 300);
+        }
+    });
+    
+    // Double-click to reset zoom (desktop)
+    img.addEventListener('dblclick', function(e) {
+        e.preventDefault();
+        if (scale > 1) {
+            resetZoom();
+        } else {
+            scale = 2;
+            applyTransform();
+        }
+    });
+    
+    // Reset zoom function
+    function resetZoom() {
+        scale = 1;
+        pointX = 0;
+        pointY = 0;
+        img.style.transition = 'transform 0.3s ease';
+        applyTransform();
+        
+        setTimeout(() => {
+            img.style.transition = 'none';
+        }, 300);
+    }
+    
+    // Calculate distance between two touch points
+    function getDistance(touch1, touch2) {
+        const dx = touch1.clientX - touch2.clientX;
+        const dy = touch1.clientY - touch2.clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+    
+    // Prevent context menu on long press
+    img.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    });
+    
+    // Prevent image drag
+    img.addEventListener('dragstart', function(e) {
+        e.preventDefault();
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: pop_materials_app
+    ports:
+      - "5001:5000"  # استخدام منفذ 5001 لتجنب التعارض مع المشروع الآخر
+    environment:
+      - FLASK_ENV=production
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-change-this-in-production}
+      - DATABASE_URL=${DATABASE_URL:-}
+    volumes:
+      - ./static/uploads:/app/static/uploads
+      - ./database.db:/app/database.db
+    restart: unless-stopped
+    networks:
+      - pop_materials_network
+
+networks:
+  pop_materials_network:
+    driver: bridge

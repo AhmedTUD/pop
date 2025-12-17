@@ -1,0 +1,84 @@
+/* Image Upload Layout Fix */
+
+/* Container for centering the upload button */
+.file-upload-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* Override any conflicting file-upload-label styles */
+.file-upload-label {
+    /* Responsive width - fits container but has reasonable limits */
+    width: 100% !important;
+    max-width: 400px !important;
+    min-width: 200px !important;
+    margin: 0 auto !important;
+    
+    /* Ensure it doesn't overflow */
+    box-sizing: border-box !important;
+    
+    /* Keep existing styling but make responsive */
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    padding: 16px 24px !important;
+    text-align: center !important;
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+    .file-upload-container {
+        padding: 5px;
+    }
+    
+    .file-upload-label {
+        width: 90% !important;
+        max-width: 300px !important;
+        min-width: 150px !important;
+        padding: 12px 16px !important;
+        font-size: 13px !important;
+        gap: 6px !important;
+    }
+
+    .upload-icon {
+        font-size: 16px !important;
+    }
+
+    .upload-hint {
+        font-size: 11px !important;
+    }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+    .file-upload-label {
+        width: 85% !important;
+        max-width: 250px !important;
+        min-width: 120px !important;
+        padding: 10px 12px !important;
+        font-size: 12px !important;
+        gap: 4px !important;
+    }
+
+    .upload-icon {
+        font-size: 14px !important;
+    }
+
+    .upload-text {
+        font-size: 12px !important;
+    }
+
+    .upload-hint {
+        font-size: 10px !important;
+    }
+
+    .image-upload-section {
+        padding: 15px !important;
+    }
+}

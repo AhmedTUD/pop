@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block title %}Data Entry - RM Team Checklist{% endblock %}
+
+{% block content %}
+<div class="data-entry-container">
+    <div class="header">
+        <h2>RM Team Check list - Data Entry</h2>
+        <div class="user-info">
+            <span>Welcome, {{ session.user_name }}</span>
+            <a href="{{ url_for('logout') }}" class="admin-btn admin-btn-logout" title="Logout">
+                <span class="btn-icon">🚪</span>
+                <span class="btn-text">Logout</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="current-date">
+        <strong>Current Date: <span id="currentDate"></span></strong>
+    </div>
+
+    <div class="branch-assignment-info">
+        <h4>📍 Branch Information</h4>
+        <p>You can only select from branches assigned to you by the admin. Shop codes are read-only and automatically
+            filled when you select a branch.</p>
+    </div>
+
+    <form id="dataEntryForm" method="POST" action="/submit_data" enctype="multipart/form-data">
+        <div id="modelsContainer">
+            <div class="model-entry" data-index="0">
+                <h3>Model Entry 1</h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="branch_0">Branch Name:</label>
+                        <div class="autocomplete-container">
+                            <input type="text" id="branch_0" name="branch_0" class="branch-input"
+                                placeholder="Type branch name or shop code..." required autocomplete="off">
+                            <div class="autocomplete-suggestions" id="suggestions_0"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shop_code_0">Shop Code:</label>
+                        <input type="text" id="shop_code_0" name="shop_code_0" class="shop-code-input"
+                            placeholder="Select branch first..." required autocomplete="off">
+                        <small class="form-help">Shop code will be filled automatically when you select a branch</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="category_0">Category:</label>
+                    <select id="category_0" name="category_0" class="category-select" required>
+                        <option value="">Select Category</option>
+                        <!-- Categories will be loaded dynamically -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="model_0">Model:</label>
+                    <select id="model_0" name="model_0" class="model-select" required disabled>
+                        <option value="">Select Model</option>
+                    </select>
+                </div>
+
+                <div class="display-type-section" style="display: none;">
+                    <h4>Display Type</h4>
+                    <div class="form-group">
+                        <select name="display_type_0" class="display-type-select" required>
+                            <option value="">Select Display Type</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pop-material-section" style="display: none;">
+                    <h4>POP Material</h4>
+                    <div class="checklist-container">
+                        <!-- Checklist items will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="comment-section" style="display: none;">
+                    <h4>💬 Comments (Optional)</h4>
+                    <div class="form-group">
+                        <button type="button" class="admin-btn add-comment-btn" data-index="0" title="Add Comment">
+                            <span class="btn-icon">💬</span>
+                            <span class="btn-text">Comment</span>
+                        </button>
+                        <div class="comment-input-container" style="display: none;">
+                            <label for="comment_0">Comment:</label>
+                            <textarea id="comment_0" name="comment_0" class="comment-textarea"
+                                placeholder="Add your comment here... (unlimited characters)" rows="4"></textarea>
+                            <div class="comment-actions">
+                                <button type="button" class="admin-btn admin-btn-logout remove-comment-btn"
+                                    style="height: 35px; min-width: 60px;">
+                                    <span class="btn-icon" style="font-size: 14px; margin-bottom: 2px;">🗑️</span>
+                                    <span class="btn-text" style="font-size: 9px;">Remove</span>
+                                </button>
+                                <small class="comment-info">💡 Comments will appear in reports</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="image-upload-section" style="display: none;">
+                    <h4>📸 Image Upload</h4>
+                    <div class="form-group">
+                        <div class="file-upload-container">
+                            <label for="images_0" class="file-upload-label">
+                                <span class="upload-icon">📁</span>
+                                <span class="upload-text">Choose Images</span>
+                                <span class="upload-hint">(Max 10 images)</span>
+                            </label>
+                        </div>
+                        <input type="file" id="images_0" name="images_0" multiple accept="image/*,.webp,.avif"
+                            class="image-upload" style="display: none;" max="10">
+                        <div class="upload-info">
+                            <small>💡 You can select multiple images at once</small>
+                        </div>
+                        <div class="image-preview"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" id="addModelBtn" class="admin-btn" title="Add Another Model">
+                <span class="btn-icon">➕</span>
+                <span class="btn-text">Add Model</span>
+            </button>
+            <button type="submit" class="admin-btn admin-btn-success" title="Save Data">
+                <span class="btn-icon">💾</span>
+                <span class="btn-text">Save Data</span>
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/data_entry.js') }}?v=3.5"></script>
+<script>
+    // عرض التاريخ والوقت المحلي - توقيت القاهرة
+    function updateCurrentDateTime() {
+        const now = new Date();
+        const options = {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false,
+            timeZone: 'Africa/Cairo'  // توقيت القاهرة مع التعامل التلقائي مع التوقيت الشتوي/الصيفي
+        };
+
+        const cairoDateTime = now.toLocaleString('en-GB', options);
+        const currentDateElement = document.getElementById('currentDate');
+        if (currentDateElement) {
+            currentDateElement.textContent = cairoDateTime;
+        }
+    }
+
+    // تحديث الوقت كل ثانية
+    document.addEventListener('DOMContentLoaded', function () {
+        updateCurrentDateTime();
+        setInterval(updateCurrentDateTime, 1000);
+    });
+</script>
+{% endblock %}

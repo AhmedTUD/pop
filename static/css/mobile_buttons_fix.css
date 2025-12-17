@@ -1,0 +1,856 @@
+/* 🎨 تصميم أزرار موحد وجميل للموبايل والديسكتوب */
+
+/* ===== الأزرار الأساسية - تصميم موحد ===== */
+.admin-btn,
+.btn {
+    /* التصميم الأساسي */
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+
+    /* الحجم والمسافات */
+    padding: 12px 20px !important;
+    min-height: 48px !important;
+    border-radius: 12px !important;
+    border: none !important;
+
+    /* النص والخط */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+
+    /* التفاعل */
+    cursor: pointer !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-sizing: border-box !important;
+
+    /* إزالة التحديد */
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    user-select: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+
+    /* الظل الأساسي */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+
+    /* التدرج الافتراضي */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+}
+
+/* تأثيرات التفاعل الموحدة */
+.admin-btn:hover,
+.btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
+    filter: brightness(1.1) !important;
+}
+
+.admin-btn:active,
+.btn:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3) !important;
+    transition: all 0.1s ease !important;
+}
+
+/* ===== أنواع الأزرار المختلفة ===== */
+
+/* زر النجاح - أزرق فاتح */
+.admin-btn-success,
+.btn-success {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+}
+
+.admin-btn-success:hover,
+.btn-success:hover {
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
+}
+
+/* زر التصدير - بنفسجي */
+.admin-btn-export,
+.export-excel-btn {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+    color: white !important;
+}
+
+.admin-btn-export:hover,
+.export-excel-btn:hover {
+    box-shadow: 0 8px 25px rgba(118, 75, 162, 0.4) !important;
+}
+
+/* زر بسيط - أزرق فاتح */
+.admin-btn-simple,
+.btn-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%) !important;
+    color: white !important;
+}
+
+.admin-btn-simple:hover,
+.btn-secondary:hover {
+    box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4) !important;
+}
+
+/* زر الخطر - أحمر */
+.admin-btn-danger,
+.btn-danger,
+.delete-entry-btn {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+    color: white !important;
+}
+
+.admin-btn-danger:hover,
+.btn-danger:hover,
+.delete-entry-btn:hover {
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4) !important;
+}
+
+/* زر تسجيل الخروج - برتقالي */
+.admin-btn-logout {
+    background: linear-gradient(135deg, #fd7e14 0%, #e55a00 100%) !important;
+    color: white !important;
+}
+
+.admin-btn-logout:hover {
+    box-shadow: 0 8px 25px rgba(253, 126, 20, 0.4) !important;
+}
+
+/* زر التحذير - أصفر */
+.btn-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%) !important;
+    color: #212529 !important;
+}
+
+.btn-warning:hover {
+    box-shadow: 0 8px 25px rgba(255, 193, 7, 0.4) !important;
+}
+
+/* زر المعلومات - أزرق سماوي */
+.btn-info {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%) !important;
+    color: white !important;
+}
+
+.btn-info:hover {
+    box-shadow: 0 8px 25px rgba(23, 162, 184, 0.4) !important;
+}
+
+/* ===== الأيقونات داخل الأزرار ===== */
+.btn-icon,
+.admin-btn .btn-icon {
+    font-size: 16px !important;
+    line-height: 1 !important;
+    flex-shrink: 0 !important;
+}
+
+.btn-text,
+.admin-btn .btn-text {
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* ===== أزرار رفع الملفات ===== */
+input[type="file"] {
+    display: none !important;
+}
+
+/* زر رفع الملفات - إعدادات خاصة للموبايل فقط */
+
+.upload-icon {
+    font-size: 18px !important;
+}
+
+.upload-text {
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+}
+
+.upload-hint {
+    font-size: 12px !important;
+    opacity: 0.8 !important;
+}
+
+/* ===== تخصيصات للموبايل ===== */
+@media (max-width: 768px) {
+
+    /* تقليل حجم الأزرار للموبايل */
+    .admin-btn,
+    .btn {
+        padding: 10px 16px !important;
+        min-height: 44px !important;
+        font-size: 13px !important;
+        border-radius: 10px !important;
+        gap: 6px !important;
+    }
+
+    /* أزرار صغيرة للموبايل */
+    .btn-sm,
+    .admin-btn.btn-sm {
+        padding: 8px 12px !important;
+        min-height: 36px !important;
+        font-size: 12px !important;
+        border-radius: 8px !important;
+    }
+
+    /* أيقونات أصغر للموبايل */
+    .btn-icon {
+        font-size: 14px !important;
+    }
+
+    /* زر رفع الملفات للموبايل - صغير ومتمركز */
+    .file-upload-label {
+        padding: 10px 16px !important;
+        min-height: 40px !important;
+        font-size: 12px !important;
+        border-radius: 8px !important;
+        width: 160px !important;
+        max-width: 160px !important;
+        margin: 0 auto !important;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        border: 2px solid #667eea !important;
+        color: white !important;
+        box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3) !important;
+        display: block !important;
+    }
+
+    .file-upload-label:hover {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+        border-color: #764ba2 !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 15px rgba(118, 75, 162, 0.4) !important;
+    }
+
+    .upload-icon {
+        font-size: 14px !important;
+    }
+
+    .upload-hint {
+        display: none !important;
+    }
+
+    /* تحسين حاوي رفع الصور للموبايل */
+    .image-upload-section {
+        text-align: center !important;
+        padding: 15px !important;
+    }
+
+    .image-upload-section .form-group {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+
+    /* ===== تخطيط الأزرار للموبايل ===== */
+
+    /* أزرار لوحة التحكم - صف واحد جنب بعض */
+    .admin-actions {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+        width: 100% !important;
+        margin: 12px 0 !important;
+        justify-content: space-between !important;
+    }
+
+    /* كل زر يأخذ مساحة متساوية */
+    .admin-actions .admin-btn {
+        flex: 1 !important;
+        min-width: 0 !important;
+        max-width: none !important;
+    }
+
+    /* أزرار النماذج - عمودي */
+    .form-actions {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        width: 100% !important;
+        margin-top: 20px !important;
+    }
+
+    .form-actions .btn,
+    .form-actions .admin-btn {
+        width: 100% !important;
+        margin: 0 !important;
+    }
+
+    /* أزرار الفلترة - صف واحد */
+    .filter-actions {
+        display: flex !important;
+        gap: 8px !important;
+        width: 100% !important;
+    }
+
+    .filter-actions .btn {
+        flex: 1 !important;
+        margin: 0 !important;
+    }
+
+
+    /* ===== أزرار الجداول للموبايل ===== */
+    .data-table td {
+        padding: 6px 4px !important;
+    }
+
+    .data-table .btn,
+    .data-table .admin-btn {
+        width: 100% !important;
+        margin: 2px 0 !important;
+        padding: 6px 8px !important;
+        min-height: 32px !important;
+        font-size: 11px !important;
+        border-radius: 6px !important;
+    }
+
+    /* أزرار الحذف في الجداول */
+    .delete-entry-btn {
+        width: 100% !important;
+        padding: 4px 8px !important;
+        min-height: 28px !important;
+        font-size: 10px !important;
+        border-radius: 6px !important;
+    }
+
+    /* ===== أزرار التبويبات للموبايل ===== */
+    .management-tabs {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)) !important;
+        gap: 4px !important;
+        margin-bottom: 16px !important;
+    }
+
+    .tab-btn,
+    .tab-button {
+        padding: 8px 6px !important;
+        min-height: 36px !important;
+        font-size: 11px !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+    }
+
+
+    /* ===== أزرار خاصة للموبايل ===== */
+
+    /* أزرار التعليقات */
+    .add-comment-btn,
+    .remove-comment-btn {
+        width: 100% !important;
+        margin: 4px 0 !important;
+    }
+
+    .comment-actions {
+        display: flex !important;
+        gap: 8px !important;
+        align-items: center !important;
+        margin-top: 8px !important;
+    }
+
+    .remove-comment-btn {
+        flex-shrink: 0 !important;
+        width: auto !important;
+        min-width: 80px !important;
+    }
+
+    /* أزرار عرض الصور */
+    .view-images-btn,
+    .view-comment-btn {
+        width: 100% !important;
+        padding: 8px 12px !important;
+        min-height: 36px !important;
+        font-size: 12px !important;
+        border-radius: 8px !important;
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%) !important;
+        color: white !important;
+        border: none !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .view-images-btn:hover,
+    .view-comment-btn:hover {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3) !important;
+    }
+
+    /* أزرار Modal */
+    .modal .btn,
+    .modal .admin-btn {
+        width: 100% !important;
+        margin: 4px 0 !important;
+    }
+
+    .modal-footer {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+
+}
+
+/* ===== تحسينات للشاشات الصغيرة جداً ===== */
+@media (max-width: 480px) {
+
+    .admin-btn,
+    .btn {
+        padding: 8px 12px !important;
+        min-height: 40px !important;
+        font-size: 12px !important;
+        border-radius: 8px !important;
+    }
+
+    .btn-icon {
+        font-size: 12px !important;
+    }
+
+    .admin-actions {
+        grid-template-columns: 1fr !important;
+        gap: 6px !important;
+    }
+
+    .file-upload-label {
+        padding: 10px 16px !important;
+        min-height: 44px !important;
+        font-size: 12px !important;
+    }
+
+    .upload-icon {
+        font-size: 14px !important;
+    }
+}
+
+/* ===== تحسينات للأجهزة اللوحية ===== */
+@media (min-width: 769px) and (max-width: 1024px) {
+
+    .admin-actions {
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+    }
+
+    .admin-actions .admin-btn {
+        flex: 1 !important;
+        min-width: 120px !important;
+    }
+
+    .form-actions {
+        flex-direction: row !important;
+        justify-content: center !important;
+        gap: 16px !important;
+    }
+
+    .form-actions .btn,
+    .form-actions .admin-btn {
+        width: auto !important;
+        min-width: 150px !important;
+    }
+
+    .models-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+/* ===== تأثيرات خاصة ===== */
+
+/* تأثير النقر للموبايل */
+@media (max-width: 768px) {
+
+    .admin-btn:active,
+    .btn:active {
+        transform: scale(0.95) !important;
+        transition: transform 0.1s ease !important;
+    }
+}
+
+/* تأثير التركيز */
+.admin-btn:focus,
+.btn:focus {
+    outline: 2px solid rgba(102, 126, 234, 0.5) !important;
+    outline-offset: 2px !important;
+}
+
+/* حالة التحميل */
+.admin-btn.loading,
+.btn.loading {
+    pointer-events: none !important;
+    opacity: 0.7 !important;
+}
+
+.admin-btn.loading::after,
+.btn.loading::after {
+    content: '' !important;
+    position: absolute !important;
+    width: 16px !important;
+    height: 16px !important;
+    border: 2px solid transparent !important;
+    border-top: 2px solid currentColor !important;
+    border-radius: 50% !important;
+    animation: spin 1s linear infinite !important;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* ===== تحسينات صفحة صور الموديل للموبايل ===== */
+@media (max-width: 768px) {
+
+    /* شبكة الموديلات للموبايل */
+    .models-grid {
+        grid-template-columns: 1fr !important;
+        gap: 15px !important;
+    }
+
+    .model-card {
+        padding: 15px !important;
+    }
+
+    .model-image img {
+        height: 150px !important;
+    }
+
+    .no-image {
+        padding: 25px 15px !important;
+    }
+
+    .upload-section {
+        padding: 20px !important;
+    }
+
+    .model-image-upload {
+        padding: 20px !important;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .admin-actions {
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+
+    .admin-actions .admin-btn {
+        flex: none !important;
+        width: 100% !important;
+    }
+
+    .models-grid {
+        gap: 10px !important;
+    }
+
+    .model-card {
+        padding: 12px !important;
+    }
+
+    .model-image img {
+        height: 120px !important;
+    }
+
+    /* زر رفع الملفات للشاشات الصغيرة جداً */
+    .file-upload-label {
+        width: 140px !important;
+        max-width: 140px !important;
+        padding: 8px 12px !important;
+        min-height: 36px !important;
+        font-size: 11px !important;
+        border-radius: 6px !important;
+        display: block !important;
+    }
+
+    /* زر الجايد للموبايل الصغير */
+    .model-image-icon {
+        font-size: 10px !important;
+        padding: 4px 8px !important;
+        margin: 4px auto 0 auto !important;
+    }
+
+    /* تحسينات إضافية للشاشات الصغيرة */
+    .upload-icon {
+        font-size: 12px !important;
+    }
+
+    .image-upload-section {
+        padding: 10px !important;
+    }
+
+    /* إعدادات الفروع للشاشات الصغيرة جداً */
+    .branch-row {
+        grid-template-columns: 1fr 1fr auto !important;
+        gap: 6px !important;
+    }
+
+    .remove-branch-btn {
+        min-width: 50px !important;
+        height: 28px !important;
+        padding: 4px 6px !important;
+        font-size: 9px !important;
+    }
+
+    .branch-row input {
+        font-size: 12px !important;
+        padding: 8px !important;
+    }
+}
+
+/* ===== 📝 تحسينات صفحة التسجيل للموبايل ===== */
+@media (max-width: 768px) {
+
+    .register-form {
+        padding: 20px !important;
+        margin: 10px !important;
+    }
+
+    .register-form h2 {
+        font-size: 22px !important;
+        margin-bottom: 20px !important;
+    }
+
+    .branches-container {
+        padding: 15px !important;
+    }
+
+    .branch-row {
+        grid-template-columns: 1fr 1fr auto !important;
+        gap: 8px !important;
+        align-items: center !important;
+    }
+
+    .branch-row input {
+        width: 100% !important;
+    }
+
+    .remove-branch-btn {
+        width: auto !important;
+        min-width: 60px !important;
+        height: 32px !important;
+        padding: 6px 8px !important;
+        font-size: 10px !important;
+        margin: 0 !important;
+    }
+}
+
+/* ===== 👥 تحسينات User Management للموبايل ===== */
+@media (max-width: 768px) {
+
+    .user-branches-info {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+
+    .branches-count {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+    }
+
+    .manage-branches-btn,
+    .add-branches-btn {
+        width: auto !important;
+        min-width: 80px !important;
+    }
+
+    .branches-preview {
+        font-size: 11px !important;
+    }
+
+    /* أزرار الإجراءات للموبايل */
+    .user-actions-column {
+        gap: 6px !important;
+        padding: 4px !important;
+    }
+
+    .user-action-btn {
+        min-width: 70px !important;
+        height: 32px !important;
+        padding: 6px 12px !important;
+        font-size: 11px !important;
+    }
+
+    .action-icon {
+        font-size: 12px !important;
+    }
+
+    .action-text {
+        font-size: 10px !important;
+    }
+
+    /* Manage Branches للموبايل */
+    .branches-management-modern {
+        gap: 20px !important;
+    }
+
+    .input-group-modern {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+
+    .branches-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+
+    .section-header-modern {
+        flex-direction: column !important;
+        gap: 8px !important;
+        align-items: flex-start !important;
+    }
+}
+
+/* ===== 🏢 تحسينات Admin Management للموبايل ===== */
+@media (max-width: 768px) {
+
+    .management-tabs {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 4px !important;
+    }
+
+    .tab-btn {
+        padding: 8px 6px !important;
+        font-size: 11px !important;
+        min-height: 36px !important;
+    }
+
+    .section-header {
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+
+    .filter-controls {
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+
+    .branch-input-row {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+
+    .branch-input-row input {
+        width: 100% !important;
+    }
+}
+
+/* ===== تحسينات إضافية للتصميم ===== */
+
+/* معاينة الصور */
+.image-preview {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)) !important;
+    gap: 12px !important;
+    margin-top: 16px !important;
+    padding: 16px !important;
+    background: rgba(102, 126, 234, 0.05) !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(102, 126, 234, 0.2) !important;
+}
+
+.image-preview img {
+    width: 100% !important;
+    height: 100px !important;
+    object-fit: cover !important;
+    border-radius: 8px !important;
+    border: 2px solid #fff !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    transition: transform 0.3s ease !important;
+}
+
+.image-preview img:hover {
+    transform: scale(1.05) !important;
+}
+
+/* قسم رفع الصور */
+.image-upload-section {
+    margin-top: 20px !important;
+    padding: 20px !important;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%) !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(102, 126, 234, 0.2) !important;
+    text-align: center !important;
+}
+
+.image-upload-section h4 {
+    font-size: 16px !important;
+    margin-bottom: 16px !important;
+    color: #667eea !important;
+    font-weight: 600 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+}
+
+/* معلومات الرفع */
+.upload-info {
+    margin-top: 12px !important;
+    text-align: center !important;
+}
+
+.upload-info small {
+    font-size: 12px !important;
+    color: #6c757d !important;
+    display: block !important;
+    line-height: 1.4 !important;
+}
+
+/* ===== تحسينات للموبايل ===== */
+@media (max-width: 768px) {
+
+    .image-preview {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+        padding: 12px !important;
+    }
+
+    .image-preview img {
+        height: 80px !important;
+    }
+
+    .image-upload-section {
+        padding: 16px !important;
+        margin-top: 16px !important;
+    }
+
+    .image-upload-section h4 {
+        font-size: 14px !important;
+        margin-bottom: 12px !important;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .image-preview {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 6px !important;
+        padding: 8px !important;
+    }
+
+    .image-preview img {
+        height: 60px !important;
+    }
+
+    .image-upload-section {
+        padding: 12px !important;
+        margin-top: 12px !important;
+    }
+
+    .image-upload-section h4 {
+        font-size: 13px !important;
+        margin-bottom: 8px !important;
+    }
+
+    .upload-info small {
+        font-size: 11px !important;
+    }
+}

@@ -1,0 +1,577 @@
+/* ===== 📱 تصميم زر تثبيت PWA الجميل ===== */
+
+.pwa-install-btn {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    
+    width: 100%;
+    padding: 20px;
+    margin: 25px 0 15px 0;
+    
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 16px;
+    
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    position: relative;
+    overflow: hidden;
+    
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* تأثير الظهور */
+.pwa-install-btn.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* تأثير الإضاءة المتحركة */
+.pwa-install-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.pwa-install-btn:hover::before {
+    left: 100%;
+}
+
+/* تأثيرات التفاعل */
+.pwa-install-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+    filter: brightness(1.1);
+}
+
+.pwa-install-btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+/* أيقونة التطبيق */
+.install-icon {
+    font-size: 32px;
+    line-height: 1;
+    animation: bounce 2s infinite;
+    flex-shrink: 0;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-5px); }
+    60% { transform: translateY(-3px); }
+}
+
+/* نص التثبيت */
+.install-text {
+    flex: 1;
+    text-align: left;
+}
+
+.install-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+}
+
+.install-subtitle {
+    font-size: 12px;
+    opacity: 0.9;
+    font-weight: 400;
+}
+
+/* سهم التحميل */
+.install-arrow {
+    font-size: 20px;
+    animation: pulse 2s infinite;
+    flex-shrink: 0;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* ===== 📊 رسائل التقدم والحالة ===== */
+
+/* رسالة التثبيت قيد التقدم */
+.install-progress {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10000;
+    
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    
+    animation: slideIn 0.3s ease;
+}
+
+.progress-content {
+    text-align: center;
+    min-width: 250px;
+}
+
+.progress-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.progress-text {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: #e9ecef;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 3px;
+    animation: progressFill 2s ease-in-out;
+}
+
+@keyframes progressFill {
+    from { width: 0%; }
+    to { width: 100%; }
+}
+
+/* رسالة النجاح */
+.install-success {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 20px 25px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);
+    
+    animation: slideInRight 0.5s ease;
+    max-width: 350px;
+}
+
+.success-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.success-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.success-text {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.success-subtitle {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* تعليمات التثبيت اليدوي */
+.install-instructions {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    animation: fadeIn 0.3s ease;
+}
+
+.instructions-content {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    text-align: center;
+    
+    animation: scaleIn 0.3s ease;
+}
+
+.instructions-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.instructions-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.instructions-text {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.instructions-close {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.instructions-close:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* نصائح التثبيت */
+.install-tips {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    animation: fadeIn 0.3s ease;
+}
+
+.tips-content {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 450px;
+    
+    animation: scaleIn 0.3s ease;
+}
+
+.tips-icon {
+    font-size: 48px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.tips-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.tips-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 25px 0;
+}
+
+.tips-list li {
+    padding: 8px 0;
+    font-size: 14px;
+    color: #555;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.tips-list li:last-child {
+    border-bottom: none;
+}
+
+.tips-close {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.tips-close:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* حالة الاتصال */
+.connection-status {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    
+    animation: slideInUp 0.3s ease;
+    max-width: 300px;
+}
+
+.connection-status.success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+}
+
+.connection-status.warning {
+    background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+    color: #212529;
+}
+
+.status-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.status-text {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* إشعار التحديث */
+.update-notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    color: white;
+    padding: 20px 25px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(23, 162, 184, 0.3);
+    
+    animation: slideInDown 0.5s ease;
+    max-width: 400px;
+}
+
+.update-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.update-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+    animation: spin 2s linear infinite;
+}
+
+.update-text {
+    flex: 1;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.update-btn, .update-close {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 8px;
+}
+
+.update-btn:hover, .update-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -100%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+/* ===== 📱 تحسينات الموبايل ===== */
+
+@media (max-width: 768px) {
+    .pwa-install-btn {
+        padding: 16px;
+        margin: 20px 0 10px 0;
+        border-radius: 12px;
+    }
+    
+    .install-icon {
+        font-size: 28px;
+    }
+    
+    .install-title {
+        font-size: 14px;
+    }
+    
+    .install-subtitle {
+        font-size: 11px;
+    }
+    
+    .install-arrow {
+        font-size: 18px;
+    }
+    
+    .install-instructions .instructions-content,
+    .install-tips .tips-content {
+        margin: 20px;
+        padding: 30px 25px;
+        max-width: calc(100% - 40px);
+    }
+    
+    .connection-status {
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .update-notification {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        transform: none;
+        max-width: none;
+    }
+}
+
+/* ===== 🎨 تأثيرات إضافية ===== */
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* تحسين الخطوط العربية */
+.pwa-install-btn,
+.install-instructions,
+.install-tips,
+.connection-status,
+.update-notification {
+    font-family: 'Segoe UI', 'Tahoma', 'Arial', sans-serif;
+}
+
+/* إخفاء زر التثبيت في وضع standalone */
+@media (display-mode: standalone) {
+    .pwa-install-btn {
+        display: none !important;
+    }
+}
+
+/* إخفاء زر التثبيت في iOS standalone */
+@media (max-width: 768px) and (-webkit-min-device-pixel-ratio: 2) {
+    .pwa-install-btn {
+        display: none;
+    }
+}

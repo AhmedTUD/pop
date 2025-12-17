@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Register New User - RM Team Checklist{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <div class="register-form">
+        <h2>Register New Employee</h2>
+
+        <form method="POST" action="{{ url_for('register') }}">
+            <div class="form-group">
+                <label for="name">Username:</label>
+                <input type="text" id="name" name="name" required placeholder="Enter username for login">
+            </div>
+
+            <div class="form-group">
+                <label for="full_name">Full Name:</label>
+                <input type="text" id="full_name" name="full_name" placeholder="Enter full name (optional)">
+            </div>
+
+            <div class="form-group">
+                <label for="company_code">Company Code:</label>
+                <input type="text" id="company_code" name="company_code" required
+                    placeholder="Enter unique company code">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required placeholder="Enter password">
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password:</label>
+                <input type="password" id="confirm_password" name="confirm_password" required
+                    placeholder="Confirm password">
+            </div>
+
+            <div class="form-group">
+                <label>Assigned Branches:</label>
+                <div class="branches-container">
+                    <div class="branch-entry" data-index="0">
+                        <div class="branch-row">
+                            <input type="text" name="branch_names[]" placeholder="Branch Name" required>
+                            <input type="text" name="branch_codes[]" placeholder="Branch Code" required>
+                            <button type="button" class="admin-btn admin-btn-danger remove-branch-btn"
+                                style="display: none;" onclick="removeBranch(0)" title="Remove Branch">
+                                <span class="btn-icon">🗑️</span>
+                                <span class="btn-text">Remove</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="branch-actions">
+                    <button type="button" class="admin-btn" onclick="addBranch()" title="Add Another Branch">
+                        <span class="btn-icon">➕</span>
+                        <span class="btn-text">Add Branch</span>
+                    </button>
+                </div>
+                <small class="form-help">Add all branches this employee can access</small>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="admin-btn admin-btn-success" title="Register Employee">
+                    <span class="btn-icon">👤</span>
+                    <span class="btn-text">Register Employee</span>
+                </button>
+                <a href="{{ url_for('admin_dashboard') }}" class="admin-btn admin-btn-secondary" title="Back to Dashboard">
+                    <span class="btn-icon">🏠</span>
+                    <span class="btn-text">Back to Dashboard</span>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Password confirmation validation
+    document.getElementById('confirm_password').addEventListener('input', function () {
+        const password = document.getElementById('password').value;
+        const confirmPassword = this.value;
+
+        if (password !== confirmPassword) {
+            this.setCustomValidity('Passwords do not match');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+
+    // Form validation
+    document.querySelector('form').addEventListener('submit', function (e) {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+
+        if (password !== confirmPassword) {
+            e.preventDefault();
+            alert('Passwords do not match!');
+            return false;
+        }
+
+        if (password.length < 6) {
+            e.preventDefault();
+            alert('Password must be at least 6 characters long!');
+            return false;
+        }
+    });
+
+    // Branch management
+    let branchCounter = 1;
+
+    function addBranch() {
+        const container = document.querySelector('.branches-container');
+        const newBranch = document.createElement('div');
+        newBranch.className = 'branch-entry';
+        newBranch.setAttribute('data-index', branchCounter);
+
+        newBranch.innerHTML = `
+            <div class="branch-row">
+                <input type="text" name="branch_names[]" placeholder="Branch Name" required>
+                <input type="text" name="branch_codes[]" placeholder="Branch Code" required>
+                <button type="button" class="admin-btn admin-btn-danger remove-branch-btn" onclick="removeBranch(${branchCounter})" title="Remove Branch">
+                    <span class="btn-icon">🗑️</span>
+                    <span class="btn-text">Remove</span>
+                </button>
+            </div>
+        `;
+
+        container.appendChild(newBranch);
+        branchCounter++;
+
+        // Show remove button for first branch if more than one exists
+        updateRemoveButtons();
+    }
+
+    function removeBranch(index) {
+        const branchEntry = document.querySelector(`[data-index="${index}"]`);
+        if (branchEntry) {
+            branchEntry.remove();
+            updateRemoveButtons();
+        }
+    }
+
+    function updateRemoveButtons() {
+        const branches = document.querySelectorAll('.branch-entry');
+        branches.forEach((branch, index) => {
+            const removeBtn = branch.querySelector('.remove-branch-btn');
+            if (branches.length > 1) {
+                removeBtn.style.display = 'inline-block';
+            } else {
+                removeBtn.style.display = 'none';
+            }
+        });
+    }
+</script>
+{% endblock %}

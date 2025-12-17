@@ -1,0 +1,334 @@
+{% extends "base.html" %}
+
+{% block title %}User Management - RM Team Checklist{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h2>User Management</h2>
+        <div class="admin-actions">
+            <button class="admin-btn" onclick="showChangePasswordModal()" title="Change My Password">
+                <span class="btn-icon">🔑</span>
+                <span class="btn-text">Password</span>
+            </button>
+            <a href="{{ url_for('admin_dashboard') }}" class="admin-btn" title="Back to Dashboard">
+                <span class="btn-icon">🏠</span>
+                <span class="btn-text">Dashboard</span>
+            </a>
+            <a href="{{ url_for('logout') }}" class="admin-btn admin-btn-logout" title="Logout">
+                <span class="btn-icon">🚪</span>
+                <span class="btn-text">Logout</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Users Management -->
+    <div class="management-section">
+        <div class="section-header">
+            <h3>Manage Users</h3>
+            <a href="{{ url_for('register') }}" class="admin-btn admin-btn-success" title="Add New User">
+                <span class="btn-icon">➕</span>
+                <span class="btn-text">Add User</span>
+            </a>
+        </div>
+
+        <div class="data-table-container">
+            <table class="management-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Employee Code</th>
+                        <th>Role</th>
+                        <th>Branches</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user[0] }}</td>
+                        <td>{{ user[5] if user[5] and user[5].strip() else user[1] }}</td>
+                        <td>{{ user[2] }}</td>
+                        <td>
+                            {% if user[4] %}
+                            <span class="role-badge admin">Admin</span>
+                            {% else %}
+                            <span class="role-badge employee">Employee</span>
+                            {% endif %}
+                        </td>
+                        <td class="branches-cell">
+                            <div class="user-branches-info">
+                                {% if user[6] and user[6] > 0 %}
+                                    <div class="branches-count">
+                                        <span class="badge badge-info">{{ user[6] }} Branch{{ 'es' if user[6] != 1 else '' }}</span>
+                                        <button class="admin-btn manage-branches-btn"
+                                                data-user-id="{{ user[0] }}" data-user-name="{{ user[1] }}"
+                                                onclick="showManageBranchesModal(this)" title="Manage Branches">
+                                            <span class="btn-icon">🏢</span>
+                                            <span class="btn-text">Manage</span>
+                                        </button>
+                                    </div>
+                                    {% if user[7] %}
+                                        <div class="branches-preview">
+                                            <small>{{ user[7] }}</small>
+                                        </div>
+                                    {% endif %}
+                                    {% if user[6] > 5 %}
+                                        <div class="more-branches">
+                                            <small>... and {{ user[6] - 5 }} more</small>
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="no-branches">No branches</span>
+                                    <button class="admin-btn admin-btn-success add-branches-btn"
+                                            data-user-id="{{ user[0] }}" data-user-name="{{ user[1] }}"
+                                            onclick="showAddBranchesModal(this)" title="Add Branches">
+                                        <span class="btn-icon">➕</span>
+                                        <span class="btn-text">Add Branches</span>
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="user-actions-column">
+                                <button class="user-action-btn edit-user-btn" data-user-id="{{ user[0] }}"
+                                    data-user-name="{{ user[1] }}" data-user-full-name="{{ user[5] or '' }}" data-user-code="{{ user[2] }}"
+                                    data-user-admin="{{ user[4] }}" onclick="editUserFromButton(this)" title="Edit User">
+                                    <span class="action-icon">✏️</span>
+                                    <span class="action-text">Edit</span>
+                                </button>
+                                {% if user[0] != session.user_id %}
+                                <button class="user-action-btn delete-user-btn" data-user-id="{{ user[0] }}"
+                                    data-user-name="{{ user[1] }}" onclick="deleteUserFromButton(this)" title="Delete User">
+                                    <span class="action-icon">🗑️</span>
+                                    <span class="action-text">Delete</span>
+                                </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit User Modal -->
+<div class="modal" id="userModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="user-modal-title">Add User</h3>
+            <span class="close-modal" onclick="closeUserModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="userForm">
+                <input type="hidden" id="user-id">
+
+                <div class="form-group">
+                    <label for="user-name">Username:</label>
+                    <input type="text" id="user-name" required placeholder="Enter username">
+                </div>
+
+                <div class="form-group">
+                    <label for="user-full-name">Full Name:</label>
+                    <input type="text" id="user-full-name" placeholder="Enter full name (optional)">
+                </div>
+
+                <div class="form-group">
+                    <label for="user-company-code">Code:</label>
+                    <input type="text" id="user-company-code" required placeholder="Enter employee code">
+                </div>
+
+                <div class="form-group">
+                    <label for="user-password">Password:</label>
+                    <input type="password" id="user-password">
+                    <small class="form-text" id="password-help">Leave empty to keep current password (for edit)</small>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="user-is-admin">
+                        <label for="user-is-admin">Admin User</label>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="admin-btn admin-btn-success" title="Save User">
+                        <span class="btn-icon">💾</span>
+                        <span class="btn-text">Save</span>
+                    </button>
+                    <button type="button" class="admin-btn" onclick="closeUserModal()" title="Cancel">
+                        <span class="btn-icon">❌</span>
+                        <span class="btn-text">Cancel</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="modal" id="passwordModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Change Password</h3>
+            <span class="close-modal" onclick="closePasswordModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="passwordForm">
+                <div class="form-group">
+                    <label for="current-password">Current Password:</label>
+                    <input type="password" id="current-password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="new-password">New Password:</label>
+                    <input type="password" id="new-password" required minlength="6">
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm-password">Confirm New Password:</label>
+                    <input type="password" id="confirm-password" required minlength="6">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="admin-btn admin-btn-success" title="Change Password">
+                        <span class="btn-icon">🔑</span>
+                        <span class="btn-text">Change</span>
+                    </button>
+                    <button type="button" class="admin-btn" onclick="closePasswordModal()" title="Cancel">
+                        <span class="btn-icon">❌</span>
+                        <span class="btn-text">Cancel</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Manage Branches Modal -->
+<div class="modal" id="manageBranchesModal">
+    <div class="modal-content large-modal">
+        <div class="modal-header">
+            <h3>Manage Branches - <span id="manage-branches-user-name"></span></h3>
+            <span class="close-modal" onclick="closeManageBranchesModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="branches-management-modern">
+                <!-- Current Branches Section -->
+                <div class="current-branches-section">
+                    <div class="section-header-modern">
+                        <h4><span class="section-icon">🏢</span> Current Branches</h4>
+                        <span class="branches-count-badge" id="branches-count">0 Branches</span>
+                    </div>
+                    <div id="current-branches-list" class="branches-grid">
+                        <!-- Current branches will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Add New Branch Section -->
+                <div class="add-branch-section-modern">
+                    <div class="section-header-modern">
+                        <h4><span class="section-icon">➕</span> Add New Branch</h4>
+                    </div>
+                    <div class="add-branch-form">
+                        <div class="input-group-modern">
+                            <div class="input-field">
+                                <label for="new-branch-name">Branch Name</label>
+                                <input type="text" id="new-branch-name" placeholder="Enter branch name" class="modern-input">
+                            </div>
+                            <div class="input-field">
+                                <label for="new-branch-code">Branch Code</label>
+                                <input type="text" id="new-branch-code" placeholder="Enter branch code" class="modern-input">
+                            </div>
+                        </div>
+                        <button type="button" class="add-branch-btn-modern" onclick="addBranchToUser()" title="Add Branch">
+                            <span class="btn-icon">➕</span>
+                            <span class="btn-text">Add Branch</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="admin-btn" onclick="closeManageBranchesModal()" title="Close">
+                    <span class="btn-icon">❌</span>
+                    <span class="btn-text">Close</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Branches Modal (for users with no branches) -->
+<div class="modal" id="addBranchesModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Add Branches - <span id="add-branches-user-name"></span></h3>
+            <span class="close-modal" onclick="closeAddBranchesModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="add-branches-form">
+                <div class="branches-container" id="add-branches-container">
+                    <div class="branch-entry" data-index="0">
+                        <div class="branch-row">
+                            <input type="text" name="branch_names[]" placeholder="Branch Name" required>
+                            <input type="text" name="branch_codes[]" placeholder="Branch Code" required>
+                            <button type="button" class="admin-btn admin-btn-danger remove-branch-btn" style="display: none;" onclick="removeBranchFromAdd(0)" title="Remove Branch">
+                                <span class="btn-icon">🗑️</span>
+                                <span class="btn-text">Remove</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="admin-btn" onclick="addAnotherBranchToAdd()" title="Add Another Branch">
+                    <span class="btn-icon">➕</span>
+                    <span class="btn-text">Add Another Branch</span>
+                </button>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="admin-btn admin-btn-success" onclick="saveBranchesToUser()" title="Save Branches">
+                    <span class="btn-icon">💾</span>
+                    <span class="btn-text">Save</span>
+                </button>
+                <button type="button" class="admin-btn" onclick="closeAddBranchesModal()" title="Cancel">
+                    <span class="btn-icon">❌</span>
+                    <span class="btn-text">Cancel</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirm Delete Modal -->
+<div class="modal" id="deleteUserModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Confirm Delete User</h3>
+            <span class="close-modal" onclick="closeDeleteUserModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete user <strong id="delete-user-name"></strong>?</p>
+            <p class="warning-text">This will also delete all their data entries, branches, and uploaded images. This
+                action cannot be undone.</p>
+            <div class="form-actions">
+                <button class="admin-btn admin-btn-logout" onclick="confirmDeleteUser()" title="Delete User">
+                    <span class="btn-icon">🗑️</span>
+                    <span class="btn-text">Delete</span>
+                </button>
+                <button class="admin-btn" onclick="closeDeleteUserModal()" title="Cancel">
+                    <span class="btn-icon">❌</span>
+                    <span class="btn-text">Cancel</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/user_management.js') }}"></script>
+{% endblock %}

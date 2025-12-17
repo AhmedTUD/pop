@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+
+{% block title %}Data Management - RM Team Checklist{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h2>Data Management</h2>
+        <div class="admin-actions">
+            <a href="{{ url_for('admin_dashboard') }}" class="admin-btn" title="Back to Dashboard">
+                <span class="btn-icon">🏠</span>
+                <span class="btn-text">Dashboard</span>
+            </a>
+            <a href="{{ url_for('logout') }}" class="admin-btn admin-btn-logout" title="Logout">
+                <span class="btn-icon">🚪</span>
+                <span class="btn-text">Logout</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Tips -->
+    <div class="quick-tips">
+        <div class="tips-header">
+            <span class="tips-icon">💡</span>
+            <strong>Quick Tips:</strong>
+        </div>
+        <div class="tips-content">
+            <span class="tip"><kbd>Ctrl+N</kbd> Add New</span>
+            <span class="tip"><kbd>Ctrl+S</kbd> Save</span>
+            <span class="tip"><kbd>Esc</kbd> Close</span>
+            <span class="tip">✅ Changes save instantly</span>
+        </div>
+    </div>
+
+    <!-- Management Tabs -->
+    <div class="management-tabs">
+        <button class="tab-btn active" data-tab="categories">Categories</button>
+        <button class="tab-btn" data-tab="models">Models</button>
+        <button class="tab-btn" data-tab="display_types">Display Types</button>
+        <button class="tab-btn" data-tab="pop_materials">POP Materials</button>
+    </div>
+
+    <!-- Categories Management -->
+    <div class="tab-content active" id="categories-tab">
+        <div class="management-section">
+            <div class="section-header">
+                <h3>Manage Categories</h3>
+                <button class="admin-btn admin-btn-success" onclick="showAddModal('categories')" title="Add Category">
+                    <span class="btn-icon">➕</span>
+                    <span class="btn-text">Add Category</span>
+                </button>
+            </div>
+            <div class="data-table-container">
+                <table class="management-table" id="categories-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Category Name</th>
+                            <th>Created Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Models Management -->
+    <div class="tab-content" id="models-tab">
+        <div class="management-section">
+            <div class="section-header">
+                <h3>Manage Models</h3>
+                <div class="filter-controls">
+                    <select id="models-category-filter">
+                        <option value="">All Categories</option>
+                    </select>
+                    <button class="admin-btn admin-btn-success" onclick="showAddModal('models')" title="Add Model">
+                        <span class="btn-icon">➕</span>
+                        <span class="btn-text">Add Model</span>
+                    </button>
+                </div>
+            </div>
+            <div class="data-table-container">
+                <table class="management-table" id="models-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Model Name</th>
+                            <th>Category</th>
+                            <th>Created Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Display Types Management -->
+    <div class="tab-content" id="display_types-tab">
+        <div class="management-section">
+            <div class="section-header">
+                <h3>Manage Display Types</h3>
+                <div class="filter-controls">
+                    <select id="display-types-category-filter">
+                        <option value="">All Categories</option>
+                    </select>
+                    <button class="admin-btn admin-btn-success" onclick="showAddModal('display_types')" title="Add Display Type">
+                        <span class="btn-icon">➕</span>
+                        <span class="btn-text">Add Display</span>
+                    </button>
+                </div>
+            </div>
+            <div class="data-table-container">
+                <table class="management-table" id="display_types-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Display Type</th>
+                            <th>Category</th>
+                            <th>Created Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- POP Materials Management -->
+    <div class="tab-content" id="pop_materials-tab">
+        <div class="management-section">
+            <div class="section-header">
+                <h3>Manage POP Materials</h3>
+                <div class="context-indicator" id="pop-context-indicator" style="display: none;">
+                    <span class="context-icon">🎯</span>
+                    <span class="context-text">Adding to: <strong id="context-display"></strong></span>
+                </div>
+                <div class="filter-controls">
+                    <select id="pop-materials-category-filter">
+                        <option value="">All Categories</option>
+                    </select>
+                    <select id="pop-materials-model-filter">
+                        <option value="">All Models</option>
+                    </select>
+                    <button class="admin-btn admin-btn-success" onclick="showAddModal('pop_materials')" title="Add POP Material">
+                        <span class="btn-icon">➕</span>
+                        <span class="btn-text">Add POP</span>
+                    </button>
+                </div>
+            </div>
+            <div class="data-table-container">
+                <table class="management-table" id="pop_materials-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Material Name</th>
+                            <th>Model</th>
+                            <th>Category</th>
+                            <th>Created Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal" id="dataModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modal-title">Add Item</h3>
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="dataForm">
+                <input type="hidden" id="item-id">
+                <input type="hidden" id="data-type">
+
+                <div class="form-group">
+                    <label for="item-name">Name:</label>
+                    <input type="text" id="item-name" required>
+                </div>
+
+                <div class="form-group" id="category-group" style="display: none;">
+                    <label for="item-category">Category:</label>
+                    <select id="item-category" required>
+                        <option value="">Select Category</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="model-group" style="display: none;">
+                    <label for="item-model">Model:</label>
+                    <select id="item-model" required>
+                        <option value="">Select Model</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="admin-btn admin-btn-success" title="Save">
+                        <span class="btn-icon">💾</span>
+                        <span class="btn-text">Save</span>
+                    </button>
+                    <button type="button" class="admin-btn" onclick="closeModal()" title="Cancel">
+                        <span class="btn-icon">❌</span>
+                        <span class="btn-text">Cancel</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Confirm Delete Modal -->
+<div class="modal" id="deleteModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Confirm Delete</h3>
+            <span class="close-modal" onclick="closeDeleteModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete this item?</p>
+            <div class="form-actions">
+                <button class="admin-btn admin-btn-logout" onclick="confirmDelete()" title="Delete">
+                    <span class="btn-icon">🗑️</span>
+                    <span class="btn-text">Delete</span>
+                </button>
+                <button class="admin-btn" onclick="closeDeleteModal()" title="Cancel">
+                    <span class="btn-icon">❌</span>
+                    <span class="btn-text">Cancel</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin_management.js') }}"></script>
+{% endblock %}
