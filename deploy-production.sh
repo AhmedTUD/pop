@@ -68,8 +68,6 @@ setup_files() {
     # إنشاء المجلدات المطلوبة
     mkdir -p static/uploads
     mkdir -p logs
-    mkdir -p nginx/sites-enabled
-    mkdir -p ssl
     
     # تعيين الصلاحيات
     chmod 755 static/uploads
