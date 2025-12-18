@@ -7,7 +7,7 @@ services:
     ports:
       - "5001:5000"  # منفذ جديد 5001 بدلاً من 5000
     volumes:
-      - ./database.db:/app/database.db
+      - pop_data:/app/data
       - ./static/uploads:/app/static/uploads
       - ./static:/app/static
     environment:

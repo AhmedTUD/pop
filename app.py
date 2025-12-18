@@ -134,7 +134,9 @@ def get_db_connection():
         return conn, 'postgresql'
     else:
         # Development: SQLite
-        conn = sqlite3.connect('database.db')
+        # إنشاء مجلد data إذا لم يكن موجود
+        os.makedirs('/app/data', exist_ok=True)
+        conn = sqlite3.connect('/app/data/database.db')
         return conn, 'sqlite'
 
 def execute_query(query, params=None, fetch_one=False, fetch_all=False):
