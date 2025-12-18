@@ -174,3 +174,57 @@ ssl/
 
 # Production configs (will be created on server)
 .env.production
+
+# Test files (removed from project)
+test_*.py
+debug_*.py
+fix_*.py
+add_*.py
+check_*.py
+update_*.py
+render_*.py
+production_*.py
+pythonanywhere_*.py
+final_*.py
+
+# Development and deployment files (keep only essential ones)
+*.sh
+!deploy-to-vps.sh
+!update-repository.sh
+*.bat
+*.ps1
+*.conf
+!nginx-subdomain.conf
+*.yaml
+*.yml
+!docker-compose.yml
+!docker-compose.prod.yml
+render.yaml
+
+# Documentation files (keep only essential ones)
+*.md
+!README.md
+!QUICK_START.md
+!DEPLOYMENT_INSTRUCTIONS.md
+!PROJECT_SUMMARY.md
+
+# Archive files
+*.zip
+*.tar.gz
+*.rar
+
+# Excel test files
+*.xlsx
+!static/uploads/*.xlsx
+
+# Old config files
+.bashrc
+.profile
+.vimrc
+.gitconfig
+.pythonstartup.py
+
+# Cloudinary files (removed from project)
+cloudinary_config.py
+test_cloudinary.py
+CLOUDINARY_*.md
